@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="gu">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EduGame | શૈક્ષણિક રમતો</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;font-family:"Noto Sans Gujarati",Arial,sans-serif;background:linear-gradient(135deg,#e8f5ff,#f8efff);color:#17324d}
+header{background:linear-gradient(135deg,#1565c0,#7b1fa2);color:white;text-align:center;padding:28px 16px}
+header h1{margin:0;font-size:34px} header p{margin:7px 0 0;font-size:17px}
+.container{max-width:1050px;margin:auto;padding:22px}
+.card{background:#fff;border-radius:20px;padding:22px;margin-bottom:20px;box-shadow:0 8px 25px #00000014}
+.info{text-align:center}
+.badges{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin-top:15px}
+.badge{padding:9px 14px;border-radius:30px;background:#eef5ff;font-size:14px}
+.controls{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin:15px 0}
+button,select{border:0;border-radius:12px;padding:12px 18px;font-size:16px;cursor:pointer}
+button{background:#1565c0;color:white} button:hover{opacity:.9}
+select{background:#f1f4f8}
+.games{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:15px}
+.game{padding:20px;border-radius:17px;background:#f7f9fc;border:2px solid #e7edf5;text-align:center}
+.game h3{margin:5px 0 10px}
+.game button{margin-top:8px}
+#quiz{display:none}
+.question{font-size:21px;font-weight:bold;margin:15px 0}
+.option{display:block;width:100%;margin:9px 0;background:#eef5ff;color:#17324d;text-align:left}
+.option.correct{background:#c8f7d1}.option.wrong{background:#ffd0d0}
+.score{text-align:center;font-size:20px;font-weight:bold}
+footer{text-align:center;padding:22px;color:#536779;font-size:14px}
+</style>
+</head>
+<body>
+
+<header>
+  <h1>🎮 EduGame</h1>
+  <p>શૈક્ષણિક રમતો • ધોરણ 6 થી 8</p>
+</header>
+
+<div class="container">
+  <section class="card info">
+    <h2>🌟 આપનું સ્વાગત છે!</h2>
+    <p><b>પંકજકુમાર ભગવાનદાસ ચૌહાણ</b></p>
+    <p>પ્રાથમિક શાળા દાદાના મુવાડા<br>તાલુકો ફાગવેલ, જિલ્લો ખેડા</p>
+    <div class="badges">
+      <span class="badge">📱 8238525442</span>
+      <span class="badge">🆔 શિક્ષક કોડ: 10125783</span>
+      <span class="badge">🏫 U-DISE: 24160303406</span>
+      <span class="badge">📅 2026-27</span>
+    </div>
+  </section>
+
+  <section class="card">
+    <div class="controls">
+      <label>ભાષા:
+        <select id="language" onchange="changeLanguage()">
+          <option value="gu">ગુજરાતી</option>
+          <option value="en">English</option>
+        </select>
+      </label>
+      <label>ધોરણ:
+        <select id="grade">
+          <option value="6">ધોરણ 6</option>
+          <option value="7">ધોરણ 7</option>
+          <option value="8">ધોરણ 8</option>
+        </select>
+      </label>
+    </div>
+
+    <div class="games">
+      <div class="game">
+        <div style="font-size:42px">📖</div>
+        <h3>અર્થગ્રહણ</h3>
+        <p>વાંચો, સમજો અને સાચો જવાબ પસંદ કરો.</p>
+        <button onclick="startQuiz()">રમત શરૂ કરો</button>
+      </div>
+      <div class="game">
+        <div style="font-size:42px">➕</div>
+        <h3>ગણિત રમત</h3>
+        <p>સરળ ગણિતના પ્રશ્નો ઉકેલો.</p>
+        <button onclick="mathGame()">શરૂ કરો</button>
+      </div>
+      <div class="game">
+        <div style="font-size:42px">🔤</div>
+        <h3>ભાષા રમત</h3>
+        <p>શબ્દભંડોળ અને ભાષા કૌશલ્યનો અભ્યાસ.</p>
+        <button onclick="languageGame()">શરૂ કરો</button>
+      </div>
+    </div>
+  </section>
+
+  <section class="card" id="quiz">
+    <h2 id="quizTitle">📖 અર્થગ્રહણ</h2>
+    <p id="passage"></p>
+    <div class="question" id="question"></div>
+    <div id="options"></div>
+    <div class="score" id="score"></div>
+    <div style="text-align:center;margin-top:15px">
+      <button onclick="nextQuestion()">આગળ →</button>
+    </div>
+  </section>
+</div>
+
+<footer>
+  © 2026-27 EduGame | તૈયાર કરનાર: પંકજકુમાર ભગવાનદાસ ચૌહાણ
+</footer>
+
+<script>
+const data = {
+  gu:[
+    {p:"વૃક્ષો આપણા જીવન માટે ખૂબ જ ઉપયોગી છે. તેઓ આપણને ઓક્સિજન આપે છે, હવા શુદ્ધ કરે છે અને પર્યાવરણનું સંતુલન જાળવવામાં મદદ કરે છે. તેથી આપણે વધુમાં વધુ વૃક્ષો વાવવા અને તેમનું જતન કરવું જોઈએ.",
+     q:"વૃક્ષો આપણને મુખ્યત્વે શું આપે છે?",o:["ઓક્સિજન","પ્લાસ્ટિક","લોખંડ","પેટ્રોલ"],a:0},
+    {p:"સમય ખૂબ જ કિંમતી છે. જે વ્યક્તિ સમયનું આયોજન કરે છે તે પોતાના કાર્યો સમયસર પૂર્ણ કરી શકે છે. સમયનો સદુપયોગ કરવાથી જીવનમાં સફળતા મેળવવામાં મદદ મળે છે.",
+     q:"સફળતા માટે શું કરવું જોઈએ?",o:["સમયનો સદુપયોગ","સમય બગાડવો","કામ ટાળવું","આળસ કરવી"],a:0},
+    {p:"પાણી જીવન માટે અનિવાર્ય છે. પીવાનું પાણી સ્વચ્છ રાખવું અને પાણીનો બગાડ અટકાવવો દરેક વ્યક્તિની જવાબદારી છે.",
+     q:"પાણીનો બગાડ અટકાવવો કોની જવાબદારી છે?",o:["દરેક વ્યક્તિની","માત્ર ખેડૂતોની","માત્ર વિદ્યાર્થીઓની","કોઈની નહીં"],a:0}
+  ],
+  en:[
+    {p:"Trees are very useful for our life. They give us oxygen, clean the air and help maintain environmental balance. Therefore, we should plant more trees and take care of them.",
+     q:"What do trees mainly give us?",o:["Oxygen","Plastic","Iron","Petrol"],a:0},
+    {p:"Time is very valuable. A person who plans time can complete work on time. Proper use of time helps us achieve success in life.",
+     q:"What should we do for success?",o:["Use time wisely","Waste time","Delay work","Be lazy"],a:0},
+    {p:"Water is essential for life. Keeping drinking water clean and preventing wastage of water is everyone's responsibility.",
+     q:"Whose responsibility is it to prevent water wastage?",o:["Everyone's","Only farmers'","Only students'","Nobody's"],a:0}
+  ]
+};
+
+let questions=[], index=0, points=0;
+
+function startQuiz(){
+  document.getElementById("quiz").style.display="block";
+  questions=data[document.getElementById("language").value];
+  index=0; points=0; showQuestion();
+  document.getElementById("quiz").scrollIntoView({behavior:"smooth"});
+}
+function showQuestion(){
+  const x=questions[index];
+  document.getElementById("passage").textContent=x.p;
+  document.getElementById("question").textContent=(index+1)+". "+x.q;
+  document.getElementById("score").textContent="સ્કોર: "+points;
+  const box=document.getElementById("options"); box.innerHTML="";
+  x.o.forEach((v,i)=>{
+    const b=document.createElement("button");
+    b.className="option"; b.textContent=v;
+    b.onclick=()=>checkAnswer(b,i);
+    box.appendChild(b);
+  });
+}
+function checkAnswer(btn,i){
+  const x=questions[index];
+  document.querySelectorAll(".option").forEach(b=>b.disabled=true);
+  if(i===x.a){btn.classList.add("correct");points+=10}
+  else {btn.classList.add("wrong");document.querySelectorAll(".option")[x.a].classList.add("correct")}
+  document.getElementById("score").textContent="સ્કોર: "+points;
+}
+function nextQuestion(){
+  if(index<questions.length-1){index++;showQuestion()}
+  else {alert("અભિનંદન! તમારો કુલ સ્કોર: "+points);document.getElementById("quiz").style.display="none"}
+}
+function mathGame(){
+  const a=Math.floor(Math.random()*20)+1,b=Math.floor(Math.random()*20)+1;
+  const ans=prompt("ઉકેલો: "+a+" + "+b+" = ?");
+  if(ans!==null) alert(Number(ans)==a+b?"સાચો જવાબ! 🎉":"ખોટો જવાબ. સાચો જવાબ: "+(a+b));
+}
+function languageGame(){
+  const word=document.getElementById("language").value==="gu"?"સૂર્ય":"SUN";
+  alert(document.getElementById("language").value==="gu" ?
+    "સૂર્યનો સમાનાર્થી શબ્દ પસંદ કરો: રવિ / પાણી / પવન\nસાચો જવાબ: રવિ" :
+    "Choose the synonym of SUN: Star / Water / Wind\nCorrect answer: Star");
+}
+function changeLanguage(){
+  const en=document.getElementById("language").value==="en";
+  document.querySelector("header p").textContent=en?"Educational Games • Grades 6 to 8":"શૈક્ષણિક રમતો • ધોરણ 6 થી 8";
+}
+</script>
+</body>
+</html>
